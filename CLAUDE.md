@@ -46,7 +46,9 @@ Components import **only the service** (never the client or query docs) and cons
 
 Nav links are anchor scroll targets: the sections expose `id`s (`#top` on `<main>`, `#work` on Projects, `#contact` on Footer) that `nav-items.ts` points at.
 
-**Animation** — two libraries coexist by role: **GSAP** for imperative timeline animations (wrap in `gsap.context(..., ref)` and `ctx.revert()` on cleanup — see `app/page.tsx`), **Framer Motion** for declarative variant-based/stagger animations.
+**Animation** — two libraries coexist by role: **GSAP** for imperative timeline/scroll animations, **Framer Motion** for declarative variant-based/stagger animations (see `sections/projects.tsx`).
+
+GSAP work (see `sections/hero.tsx` for the canonical pattern) always: runs in a `gsap.context(..., ref)` and `ctx.revert()`s on cleanup (kills tweens, ScrollTriggers, and listeners); registers plugins inside the effect (`gsap.registerPlugin(ScrollTrigger)`); and gates motion behind `gsap.matchMedia("(prefers-reduced-motion: no-preference)")` so it degrades to static content. Masked text reveals use an `overflow-hidden` wrapper with an inner element animated via `yPercent`; mouse parallax uses `gsap.quickTo` under a `(pointer: fine)` matchMedia.
 
 **Styling** — Tailwind CSS v4 (config via `app/globals.css`, PostCSS). shadcn/ui is configured in `components.json` (style `base-maia`, base color `olive`, lucide icons). Fonts wired through CSS variables in `layout.tsx`: Geist (sans), Geist Mono (mono), Oxanium (`--font-heading`).
 
