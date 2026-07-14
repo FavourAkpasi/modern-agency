@@ -1,21 +1,29 @@
 import { WebNav } from "@/components/layout/web-nav"
 import { MobileNav } from "@/components/layout/mobile-nav"
 import { Hero } from "@/components/sections/hero"
+import { Services } from "@/components/sections/services"
 import { Projects } from "@/components/sections/projects"
+import { CaseStudy } from "@/components/sections/case-study"
+import { About } from "@/components/sections/about"
 import { Footer } from "@/components/sections/footer"
 
 export default function Home() {
   return (
-    <main
-      id="top"
-      className="mx-auto min-h-screen max-w-screen-2xl px-6 py-12 md:px-24 md:py-24"
-    >
+    <>
       <WebNav />
       <MobileNav />
 
-      <Hero />
-      <Projects />
-      <Footer />
-    </main>
+      <main
+        id="top"
+        className="mx-auto min-h-screen max-w-screen-2xl px-6 pt-28 pb-12 md:px-24 md:pt-32 md:pb-24"
+      >
+        <Hero />
+        <Services />
+        <Projects />
+        <CaseStudy />
+        <About />
+        <Footer />
+      </main>
+    </>
   )
 }
