@@ -1,19 +1,21 @@
-import { Button } from "@/components/ui/button"
+import { WebNav } from "@/components/layout/web-nav"
+import { MobileNav } from "@/components/layout/mobile-nav"
+import { Hero } from "@/components/sections/hero"
+import { Projects } from "@/components/sections/projects"
+import { Footer } from "@/components/sections/footer"
 
-export default function Page() {
+export default function Home() {
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
-      </div>
-    </div>
+    <main
+      id="top"
+      className="mx-auto min-h-screen max-w-screen-2xl px-6 py-12 md:px-24 md:py-24"
+    >
+      <WebNav />
+      <MobileNav />
+
+      <Hero />
+      <Projects />
+      <Footer />
+    </main>
   )
 }
