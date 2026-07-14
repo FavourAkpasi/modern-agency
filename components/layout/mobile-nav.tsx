@@ -1,44 +1,61 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { AnimatePresence, motion } from "framer-motion"
 import { Menu, X } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { navItems } from "./nav-items"
+import { useActiveSection } from "@/hooks/use-active-section"
+import { navItems, sectionIds } from "./nav-items"
 import { ThemeToggle } from "./theme-toggle"
 
-// Mobile navigation. Shown below the md breakpoint; a hamburger toggles a
-// full-screen overlay that shares its links with WebNav via `navItems`.
-export function MobileNav({ className }: { className?: string }) {
+// Mobile navigation. Fixed to the top and morphs into a floating pill on
+// scroll (mirroring WebNav); a hamburger toggles a full-screen overlay that
+// shares its links — and active-section highlight — with the desktop nav.
+export function MobileNav() {
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const active = useActiveSection(sectionIds)
 
   const close = () => setOpen(false)
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40)
+    onScroll()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
+
   return (
     <>
-      <header
-        className={cn("mb-32 flex items-center justify-between md:hidden", className)}
-      >
-        <Link
-          href="#top"
-          onClick={close}
-          className="text-xl font-bold tracking-tighter uppercase"
+      <header className="fixed inset-x-0 top-0 z-50 flex justify-center md:hidden">
+        <div
+          className={cn(
+            "flex w-full items-center justify-between px-6 py-5 transition-all duration-500 ease-out",
+            scrolled &&
+              "mt-3 w-[92%] rounded-full border border-border bg-background/70 px-5 py-3 shadow-lg backdrop-blur-xl"
+          )}
         >
-          Agency.
-        </Link>
-
-        <div className="flex items-center gap-2">
-          <ThemeToggle />
-          <button
-            type="button"
-            aria-label="Open menu"
-            aria-expanded={open}
-            onClick={() => setOpen(true)}
-            className="p-1"
+          <Link
+            href="#top"
+            onClick={close}
+            className="text-xl font-bold tracking-tighter uppercase"
           >
-            <Menu className="size-6" />
-          </button>
+            Agency.
+          </Link>
+
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              type="button"
+              aria-label="Open menu"
+              aria-expanded={open}
+              onClick={() => setOpen(true)}
+              className="p-1"
+            >
+              <Menu className="size-6" />
+            </button>
+          </div>
         </div>
       </header>
 
@@ -66,20 +83,29 @@ export function MobileNav({ className }: { className?: string }) {
             </div>
 
             <nav className="flex flex-1 flex-col justify-center gap-8">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={close}
-                  className="text-5xl font-black tracking-tighter uppercase transition-colors hover:text-primary"
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {navItems.map((item) => {
+                const isActive = active === item.href.slice(1)
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={close}
+                    className={cn(
+                      "flex items-center gap-4 text-5xl font-black tracking-tighter uppercase transition-colors hover:text-primary",
+                      !isActive && "text-muted-foreground"
+                    )}
+                  >
+                    {isActive && (
+                      <span className="size-3 rounded-full bg-primary" />
+                    )}
+                    {item.label}
+                  </Link>
+                )
+              })}
               <Link
                 href="#contact"
                 onClick={close}
-                className="mt-8 w-fit border border-border px-5 py-3 text-sm font-medium tracking-widest uppercase transition-colors hover:bg-foreground hover:text-background"
+                className="mt-8 w-fit rounded-full border border-border px-5 py-3 text-sm font-medium tracking-widest uppercase transition-colors hover:bg-foreground hover:text-background"
               >
                 Let&apos;s Talk
               </Link>

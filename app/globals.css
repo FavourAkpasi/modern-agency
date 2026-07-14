@@ -127,6 +127,10 @@
     cursor: pointer;
     }
   html {
-    @apply font-mono;
+    @apply scroll-smooth font-mono;
+    }
+  /* Anchor jumps land below the fixed nav instead of behind it. */
+  [id] {
+    scroll-margin-top: 7rem;
     }
 }

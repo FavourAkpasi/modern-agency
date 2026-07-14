@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { motion, type Variants } from "framer-motion"
 import { getAllProjects } from "@/services/project.service"
+import { SectionHeading } from "./section-heading"
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -34,10 +35,8 @@ export function Projects() {
   })
 
   return (
-    <section id="work">
-      <h2 className="mb-8 text-sm tracking-widest text-muted-foreground uppercase">
-        Selected Work
-      </h2>
+    <section id="work" className="mb-32">
+      <SectionHeading label="Selected work" title="Work" />
 
       {isLoading && (
         <div className="animate-pulse text-primary">

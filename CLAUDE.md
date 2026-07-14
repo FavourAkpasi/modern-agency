@@ -40,13 +40,15 @@ Theme is toggled via `components/layout/theme-toggle.tsx` (in both navs), which 
 
 Components import **only the service** (never the client or query docs) and consume it through TanStack Query `useQuery`. The demo API is `graphqlzero.almansi.me` (a mock GraphQL endpoint). The endpoint is `NEXT_PUBLIC_`-prefixed because the Projects section fetches in the browser.
 
-**Page composition** — `app/page.tsx` is a thin server component that assembles the UI from feature components. Concerns are split into two folders:
-- `components/layout/` — navigation. `web-nav.tsx` (desktop, `hidden md:flex`) and `mobile-nav.tsx` (mobile, `md:hidden`, hamburger + Framer Motion overlay) both render links from the shared `nav-items.ts` array (so nav targets stay in sync across breakpoints) plus the shared `theme-toggle.tsx`.
-- `components/sections/` — one component per page section (`hero.tsx`, `projects.tsx`, `footer.tsx`). Each owns its own animation/data logic and is a `"use client"` component where it needs hooks.
+**Page composition** — `app/page.tsx` assembles the UI from feature components: the two fixed navs sit outside `<main>`, and `<main>` (which carries `id="top"` and top padding to clear the fixed nav) stacks the section components in order. Concerns are split into two folders:
+- `components/layout/` — navigation. `web-nav.tsx` (desktop, `md:flex`) and `mobile-nav.tsx` (mobile, `md:hidden`, hamburger + Framer Motion overlay) are both `"use client"`, `fixed` to the top, and morph into a floating blurred pill once `window.scrollY > 40`. They share links from `nav-items.ts`, the `theme-toggle.tsx`, and the `useActiveSection` scroll-spy. The desktop active-link indicator is a Framer Motion `layoutId="nav-active"` pill that slides between links.
+- `components/sections/` — one component per page section: `hero.tsx`, `services.tsx`, `projects.tsx`, `case-study.tsx`, `about.tsx`, `footer.tsx`, plus the shared `section-heading.tsx`. Each owns its own animation/data logic and is `"use client"` where it needs hooks.
 
-Nav links are anchor scroll targets: the sections expose `id`s (`#top` on `<main>`, `#work` on Projects, `#contact` on Footer) that `nav-items.ts` points at.
+Nav links are anchor scroll targets: sections expose `id`s (`#top`, `#services`, `#work`, `#case-study`, `#about`, `#contact`) that `nav-items.ts` points at. `nav-items.ts` also exports `sectionIds` (a stable module-level array) for the scroll-spy. Smooth scrolling + a `scroll-margin-top` on `[id]` (in `globals.css`) make anchor jumps land below the fixed nav.
 
-**Animation** — two libraries coexist by role: **GSAP** for imperative timeline/scroll animations, **Framer Motion** for declarative variant-based/stagger animations (see `sections/projects.tsx`).
+**Scroll-spy** — `hooks/use-active-section.ts` uses an `IntersectionObserver` (with a thin `rootMargin` band near the top) to return the id of the section currently in view; pass it a stable `ids` array to avoid re-subscribing each render.
+
+**Animation** — two libraries coexist by role: **GSAP** for imperative timeline/scroll animations, **Framer Motion** for declarative work — variant/stagger grids (`sections/projects.tsx`), `whileInView` scroll reveals (services/case-study/about), and shared-layout indicators (`layoutId` in `web-nav.tsx`).
 
 GSAP work (see `sections/hero.tsx` for the canonical pattern) always: runs in a `gsap.context(..., ref)` and `ctx.revert()`s on cleanup (kills tweens, ScrollTriggers, and listeners); registers plugins inside the effect (`gsap.registerPlugin(ScrollTrigger)`); and gates motion behind `gsap.matchMedia("(prefers-reduced-motion: no-preference)")` so it degrades to static content. Masked text reveals use an `overflow-hidden` wrapper with an inner element animated via `yPercent`; mouse parallax uses `gsap.quickTo` under a `(pointer: fine)` matchMedia.
 
