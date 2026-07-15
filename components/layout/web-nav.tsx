@@ -6,6 +6,7 @@ import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { useActiveSection } from "@/hooks/use-active-section"
 import { navItems, sectionIds } from "./nav-items"
+import { scrollToSection } from "./scroll-to-section"
 import { ThemeToggle } from "./theme-toggle"
 
 // Desktop navigation. Fixed to the top; morphs into a floating pill once the
@@ -32,6 +33,7 @@ export function WebNav() {
       >
         <Link
           href="#top"
+          onClick={(e) => scrollToSection(e, "#top")}
           className="text-xl font-bold tracking-tighter uppercase"
         >
           Agency.
@@ -44,6 +46,7 @@ export function WebNav() {
               <li key={item.href} className="relative">
                 <Link
                   href={item.href}
+                  onClick={(e) => scrollToSection(e, item.href)}
                   className={cn(
                     "relative z-10 block px-4 py-2 tracking-widest uppercase transition-colors",
                     isActive
@@ -69,6 +72,7 @@ export function WebNav() {
           <ThemeToggle />
           <Link
             href="#contact"
+            onClick={(e) => scrollToSection(e, "#contact")}
             className="rounded-full border border-border px-5 py-2 text-sm font-medium transition-colors duration-300 hover:bg-foreground hover:text-background"
           >
             Let&apos;s Talk

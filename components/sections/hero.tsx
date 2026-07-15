@@ -186,7 +186,7 @@ export function Hero() {
         </p>
 
         <a
-          href="#work"
+          href="#services"
           className="hero-scroll group flex items-center gap-3 text-sm tracking-widest text-muted-foreground uppercase transition-colors hover:text-foreground"
         >
           Scroll to explore

@@ -5,7 +5,7 @@ import type { Project } from "@/types/project"
 // Projects API. Components call these functions (usually via TanStack Query) and
 // never touch the GraphQL client or query documents directly.
 
-export async function getAllProjects(limit = 6): Promise<Project[]> {
+export async function getAllProjects(limit = 10): Promise<Project[]> {
   const data = await graphqlClient.request<{ posts: { data: Project[] } }>(
     GET_PROJECTS,
     { limit }

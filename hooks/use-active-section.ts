@@ -2,33 +2,43 @@
 
 import { useEffect, useState } from "react"
 
-// Scroll-spy: returns the id of whichever observed section is currently crossing
-// a thin band near the top of the viewport. Used to highlight the active nav
-// link. `ids` should be a stable reference (e.g. module-level) to avoid
-// re-subscribing on every render.
+// Scroll-spy: returns the id of the section currently occupying the top third of
+// the viewport, or null when above the first section (e.g. the hero). Reactive
+// in both scroll directions. `ids` must be in document order and a stable
+// reference (e.g. module-level) to avoid re-subscribing on every render.
 export function useActiveSection(ids: string[]): string | null {
   const [active, setActive] = useState<string | null>(null)
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActive(entry.target.id)
-          }
-        })
-      },
-      // Band sits ~25%–45% down the viewport, so a section "activates" as its
-      // top scrolls into the upper third.
-      { rootMargin: "-25% 0px -55% 0px", threshold: 0 }
-    )
+    let frame = 0
 
-    ids.forEach((id) => {
-      const el = document.getElementById(id)
-      if (el) observer.observe(el)
-    })
+    const measure = () => {
+      frame = 0
+      const line = window.innerHeight * 0.3
+      let current: string | null = null
+      for (const id of ids) {
+        const el = document.getElementById(id)
+        if (!el) continue
+        // ids are in document order, so once a section's top is below the
+        // line, every later one is too.
+        if (el.getBoundingClientRect().top <= line) current = id
+        else break
+      }
+      setActive((prev) => (prev === current ? prev : current))
+    }
 
-    return () => observer.disconnect()
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(measure)
+    }
+
+    measure()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    window.addEventListener("resize", onScroll, { passive: true })
+    return () => {
+      window.removeEventListener("scroll", onScroll)
+      window.removeEventListener("resize", onScroll)
+      if (frame) cancelAnimationFrame(frame)
+    }
   }, [ids])
 
   return active

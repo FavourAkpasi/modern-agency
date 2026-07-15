@@ -7,6 +7,7 @@ import { Menu, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useActiveSection } from "@/hooks/use-active-section"
 import { navItems, sectionIds } from "./nav-items"
+import { scrollToSection } from "./scroll-to-section"
 import { ThemeToggle } from "./theme-toggle"
 
 // Mobile navigation. Fixed to the top and morphs into a floating pill on
@@ -38,7 +39,10 @@ export function MobileNav() {
         >
           <Link
             href="#top"
-            onClick={close}
+            onClick={(e) => {
+              scrollToSection(e, "#top")
+              close()
+            }}
             className="text-xl font-bold tracking-tighter uppercase"
           >
             Agency.
@@ -89,7 +93,10 @@ export function MobileNav() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    onClick={close}
+                    onClick={(e) => {
+                      scrollToSection(e, item.href)
+                      close()
+                    }}
                     className={cn(
                       "flex items-center gap-4 text-5xl font-black tracking-tighter uppercase transition-colors hover:text-primary",
                       !isActive && "text-muted-foreground"
@@ -104,7 +111,10 @@ export function MobileNav() {
               })}
               <Link
                 href="#contact"
-                onClick={close}
+                onClick={(e) => {
+                  scrollToSection(e, "#contact")
+                  close()
+                }}
                 className="mt-8 w-fit rounded-full border border-border px-5 py-3 text-sm font-medium tracking-widest uppercase transition-colors hover:bg-foreground hover:text-background"
               >
                 Let&apos;s Talk
