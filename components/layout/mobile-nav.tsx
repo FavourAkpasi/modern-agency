@@ -29,7 +29,7 @@ export function MobileNav() {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50 flex justify-center md:hidden">
+      <header className="fixed inset-x-0 top-0 z-60 flex justify-center md:hidden">
         <div
           className={cn(
             "flex w-full items-center justify-between px-6 py-5 transition-all duration-500 ease-out",

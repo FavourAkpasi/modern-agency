@@ -134,3 +134,22 @@
     scroll-margin-top: 7rem;
     }
 }
+
+/* Page scales back behind the project drawer (nav sits outside this element,
+   so it stays full-size on top). */
+[data-scale-container] {
+  transition:
+    transform 0.5s cubic-bezier(0.32, 0.72, 0, 1),
+    border-radius 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+  transform-origin: top center;
+}
+body[data-drawer-open] [data-scale-container] {
+  transform: scale(0.95);
+  border-radius: 1.5rem;
+  overflow: clip;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-scale-container] {
+    transition: none;
+  }
+}
