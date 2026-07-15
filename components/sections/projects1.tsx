@@ -1,9 +1,12 @@
 "use client"
 
+import Image from "next/image"
 import { motion, type Variants } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { useProjects } from "@/hooks/use-projects"
 import { deriveMeta, shortTitle } from "@/lib/project-meta"
+import { caseStudyFromProject } from "@/lib/case-study"
+import { useProjectDrawer } from "@/components/project-drawer"
 import { SectionHeading } from "./section-heading"
 import { ProjectsEmpty, ProjectsError } from "./projects-states"
 
@@ -29,6 +32,7 @@ const tile: Variants = {
 
 export function Projects1() {
   const { data: projects, isPending, isError, refetch } = useProjects()
+  const { open } = useProjectDrawer()
 
   return (
     <section id="projects" className="mb-32">
@@ -60,23 +64,41 @@ export function Projects1() {
         >
           {projects.map((project, i) => {
             const meta = deriveMeta(project, i)
+            const onImage = Boolean(meta.image)
             return (
-              <motion.a
+              <motion.button
                 key={project.id}
-                href="#contact"
+                type="button"
+                onClick={() => open(caseStudyFromProject(project, i))}
                 variants={tile}
                 className={cn(
-                  "group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border p-6 transition-all duration-300 hover:scale-102",
+                  "group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border p-6 text-left transition-all duration-300 hover:scale-102",
                   spans[i % spans.length]
                 )}
               >
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                  style={{
-                    background: `radial-gradient(120% 120% at 100% 0%, ${meta.accent}22, transparent 80%)`,
-                  }}
-                />
+                {onImage ? (
+                  <>
+                    <Image
+                      src={meta.image!}
+                      alt={project.title}
+                      fill
+                      sizes="(min-width: 640px) 33vw, 50vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div
+                      aria-hidden
+                      className="absolute inset-0 bg-linear-to-t from-black/85 via-black/35 to-black/10"
+                    />
+                  </>
+                ) : (
+                  <div
+                    aria-hidden
+                    className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                    style={{
+                      background: `radial-gradient(120% 120% at 100% 0%, ${meta.accent}22, transparent 80%)`,
+                    }}
+                  />
+                )}
 
                 <div className="relative flex items-start justify-between">
                   <span
@@ -85,20 +107,35 @@ export function Projects1() {
                   >
                     {meta.category}
                   </span>
-                  <span className="font-mono text-xs text-muted-foreground">
+                  <span
+                    className={cn(
+                      "font-mono text-xs",
+                      onImage ? "text-white/70" : "text-muted-foreground"
+                    )}
+                  >
                     {meta.year}
                   </span>
                 </div>
 
                 <div className="relative">
-                  <h3 className="text-2xl font-black tracking-tighter uppercase md:text-3xl">
+                  <h3
+                    className={cn(
+                      "text-2xl font-black tracking-tighter uppercase md:text-3xl",
+                      onImage && "text-white"
+                    )}
+                  >
                     {shortTitle(project.title)}
                   </h3>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {meta.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="rounded-full border border-border px-2.5 py-0.5 text-[10px] tracking-widest text-muted-foreground uppercase"
+                        className={cn(
+                          "rounded-full border px-2.5 py-0.5 text-[10px] tracking-widest uppercase",
+                          onImage
+                            ? "border-white/30 text-white/80"
+                            : "border-border text-muted-foreground"
+                        )}
                       >
                         {tag}
                       </span>
@@ -106,10 +143,15 @@ export function Projects1() {
                   </div>
                 </div>
 
-                <span className="relative self-end text-xl transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1">
+                <span
+                  className={cn(
+                    "relative self-end text-xl transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1",
+                    onImage && "text-white"
+                  )}
+                >
                   ↗
                 </span>
-              </motion.a>
+              </motion.button>
             )
           })}
         </motion.div>

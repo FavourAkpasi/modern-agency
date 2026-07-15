@@ -31,6 +31,7 @@ export type ProjectMeta = {
   year: number
   tags: string[]
   accent: string
+  image?: string
 }
 
 export function deriveMeta(project: Project, index: number): ProjectMeta {
@@ -40,6 +41,13 @@ export function deriveMeta(project: Project, index: number): ProjectMeta {
     year: 2025 - (seed % 5),
     tags: [tagPool[seed % tagPool.length], tagPool[(seed + 3) % tagPool.length]],
     accent: accents[seed % accents.length],
+    // Demo: only the first two projects carry an image so you can compare the
+    // image treatment against the type/gradient fallback. Real data would set
+    // this per project.
+    image:
+      index < 8
+        ? `https://picsum.photos/seed/${project.id}-agency/1200/900`
+        : undefined,
   }
 }
 

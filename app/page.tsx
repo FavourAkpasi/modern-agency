@@ -16,6 +16,7 @@ export default function Home() {
 
       <main
         id="top"
+        data-scale-container
         className="mx-auto min-h-screen max-w-screen-2xl px-6 pt-28 pb-12 md:px-24 md:pt-32 md:pb-24"
       >
         <Hero />
