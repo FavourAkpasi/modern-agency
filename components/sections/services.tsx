@@ -189,7 +189,7 @@ function StepText({
   active: boolean
 }) {
   return (
-    <div className={cn("ml-10 w-64", align === "right" && "mr-10 text-right")}>
+    <div className={cn("ml-12 w-64", align === "right" && "mr-12 text-right")}>
       <div
         className={cn(
           "flex items-center gap-3",

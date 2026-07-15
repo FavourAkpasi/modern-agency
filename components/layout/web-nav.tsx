@@ -23,7 +23,7 @@ export function WebNav() {
   }, [])
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 hidden justify-center md:flex">
+    <header className="fixed inset-x-0 top-0 z-60 hidden justify-center md:flex">
       <nav
         className={cn(
           "flex w-full max-w-screen-2xl items-center justify-between px-6 py-6 transition-all duration-500 ease-out md:px-24",

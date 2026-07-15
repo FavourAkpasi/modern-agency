@@ -1,50 +1,89 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import { AnimatePresence, motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { useProjects } from "@/hooks/use-projects"
 import { deriveMeta, shortTitle } from "@/lib/project-meta"
+import { caseStudyFromProject } from "@/lib/case-study"
+import { useProjectDrawer } from "@/components/project-drawer"
 import type { Project } from "@/types/project"
 import { SectionHeading } from "./section-heading"
 import { ProjectsEmpty, ProjectsError } from "./projects-states"
 
 function PreviewPanel({ project, index }: { project: Project; index: number }) {
   const meta = deriveMeta(project, index)
+  const onImage = Boolean(meta.image)
   return (
     <div
-      className="relative flex aspect-4/5 flex-col justify-between overflow-hidden rounded-3xl border border-border p-8"
-      style={{
-        background: `radial-gradient(120% 100% at 0% 0%, ${meta.accent}26, transparent 55%)`,
-      }}
+      className="group/panel relative flex aspect-4/5 flex-col justify-between overflow-hidden rounded-3xl border border-border p-8"
+      style={
+        onImage
+          ? undefined
+          : {
+              background: `radial-gradient(120% 100% at 0% 0%, ${meta.accent}26, transparent 55%)`,
+            }
+      }
     >
-      <div className="flex items-center justify-between">
+      {onImage && (
+        <>
+          <Image
+            src={meta.image!}
+            alt={project.title}
+            fill
+            sizes="(min-width: 768px) 40vw, 100vw"
+            className="object-cover transition-transform duration-500 group-hover/panel:scale-105"
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-linear-to-t from-black/85 via-black/30 to-black/10"
+          />
+        </>
+      )}
+
+      <div className="relative flex items-center justify-between">
         <span
           className="text-sm tracking-widest uppercase"
           style={{ color: meta.accent }}
         >
           {meta.category}
         </span>
-        <span className="font-mono text-sm text-muted-foreground">
+        <span
+          className={cn(
+            "font-mono text-sm",
+            onImage ? "text-white/70" : "text-muted-foreground"
+          )}
+        >
           {meta.year}
         </span>
       </div>
 
-      <div>
+      <div className="relative">
         <span
           className="block text-[6rem] leading-none font-black tracking-tighter text-transparent"
           style={{ WebkitTextStroke: `2px ${meta.accent}` }}
         >
           {String(index + 1).padStart(2, "0")}
         </span>
-        <h3 className="mt-4 text-4xl font-black tracking-tighter uppercase md:text-5xl">
+        <h3
+          className={cn(
+            "mt-4 text-4xl font-black tracking-tighter uppercase md:text-5xl",
+            onImage && "text-white"
+          )}
+        >
           {shortTitle(project.title, 4)}
         </h3>
         <div className="mt-4 flex flex-wrap gap-2">
           {meta.tags.map((tag) => (
             <span
               key={tag}
-              className="rounded-full border border-border px-3 py-1 text-xs tracking-widest text-muted-foreground uppercase"
+              className={cn(
+                "rounded-full border px-3 py-1 text-xs tracking-widest uppercase",
+                onImage
+                  ? "border-white/30 text-white/80"
+                  : "border-border text-muted-foreground"
+              )}
             >
               {tag}
             </span>
@@ -57,6 +96,7 @@ function PreviewPanel({ project, index }: { project: Project; index: number }) {
 
 export function Projects2() {
   const { data: projects, isPending, isError, refetch } = useProjects()
+  const { open } = useProjectDrawer()
   const [activeIdx, setActiveIdx] = useState(0)
 
   return (
@@ -88,11 +128,12 @@ export function Projects2() {
               const activeRow = i === activeIdx
               return (
                 <li key={project.id}>
-                  <a
-                    href="#contact"
+                  <button
+                    type="button"
+                    onClick={() => open(caseStudyFromProject(project, i))}
                     onMouseEnter={() => setActiveIdx(i)}
                     onFocus={() => setActiveIdx(i)}
-                    className="group flex items-baseline justify-between gap-4 border-b border-border py-6"
+                    className="group flex w-full items-baseline justify-between gap-4 border-b border-border py-6 text-left"
                   >
                     <span className="flex items-baseline gap-4">
                       <span className="font-mono text-sm text-muted-foreground">
@@ -112,11 +153,15 @@ export function Projects2() {
                     <span className="hidden text-xs tracking-widest text-muted-foreground uppercase sm:block">
                       {meta.category}
                     </span>
-                  </a>
+                  </button>
                   {/* Mobile inline preview */}
-                  <div className="py-6 md:hidden">
+                  <button
+                    type="button"
+                    onClick={() => open(caseStudyFromProject(project, i))}
+                    className="block w-full py-6 text-left md:hidden"
+                  >
                     <PreviewPanel project={project} index={i} />
-                  </div>
+                  </button>
                 </li>
               )
             })}
@@ -124,7 +169,13 @@ export function Projects2() {
 
           {/* Sticky preview (desktop) */}
           <div className="hidden md:block">
-            <div className="sticky top-32">
+            <button
+              type="button"
+              onClick={() =>
+                open(caseStudyFromProject(projects[activeIdx], activeIdx))
+              }
+              className="sticky top-32 block w-full cursor-pointer text-left"
+            >
               <AnimatePresence mode="wait">
                 <motion.div
                   key={projects[activeIdx].id}
@@ -139,7 +190,7 @@ export function Projects2() {
                   />
                 </motion.div>
               </AnimatePresence>
-            </div>
+            </button>
           </div>
         </div>
       )}
