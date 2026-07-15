@@ -48,7 +48,13 @@ Nav links are anchor scroll targets: sections expose `id`s (`#top`, `#services`,
 
 **Scroll-spy** — `hooks/use-active-section.ts` uses an `IntersectionObserver` (with a thin `rootMargin` band near the top) to return the id of the section currently in view; pass it a stable `ids` array to avoid re-subscribing each render.
 
-**Animation** — two libraries coexist by role: **GSAP** for imperative timeline/scroll animations, **Framer Motion** for declarative work — variant/stagger grids (`sections/projects.tsx`), `whileInView` scroll reveals (services/case-study/about), and shared-layout indicators (`layoutId` in `web-nav.tsx`).
+**Animation** — two libraries coexist by role: **GSAP** for imperative timeline/scroll animations, **Framer Motion** for declarative work — variant/stagger grids (`sections/projects.tsx`), `whileInView` scroll reveals (services steps, case-study, about), and shared-layout indicators (`layoutId` in `web-nav.tsx`).
+
+`sections/services.tsx` is the scroll-driven "journey" (the most involved section):
+- Desktop draws a **rectilinear rounded-elbow path** built in real pixels (`buildPath`) from a `ResizeObserver`-measured container, so corners stay circular (no `preserveAspectRatio` distortion). Nodes are absolutely positioned at the same percentage coords the path bends to.
+- A **scroll-reactive active state** (a rAF-throttled scroll handler comparing each `[data-step]`'s center to the viewport middle) grays/colors each step's whole cluster — icon, rings, number, tick, title, desc — and is reactive **both** directions.
+- The line **fills up to the furthest active node** via `strokeDashoffset` (exact, using per-node `cumLen` from `buildPath` + `pathLength`), stroked with a vertical gradient that blends each node's color; mobile mirrors it with a `scaleY` gradient rail.
+- Ring rotation is driven manually from the same rAF scroll handler (accumulating `delta * SPIN_SPEED`) and advances **only while a node is active** — scroll-linked but gated on the colored state (no ScrollTrigger in this file). The hand-authored `StepMotif` (inline SVG rings/dots) provides the visual richness.
 
 GSAP work (see `sections/hero.tsx` for the canonical pattern) always: runs in a `gsap.context(..., ref)` and `ctx.revert()`s on cleanup (kills tweens, ScrollTriggers, and listeners); registers plugins inside the effect (`gsap.registerPlugin(ScrollTrigger)`); and gates motion behind `gsap.matchMedia("(prefers-reduced-motion: no-preference)")` so it degrades to static content. Masked text reveals use an `overflow-hidden` wrapper with an inner element animated via `yPercent`; mouse parallax uses `gsap.quickTo` under a `(pointer: fine)` matchMedia.
 
