@@ -137,11 +137,13 @@ function StepMotif() {
       <g fill="currentColor">
         {Array.from({ length: 6 }).map((_, i) => {
           const a = (i / 6) * Math.PI * 2
+          // Round so server/client serialize the same string (avoids a
+          // float-precision hydration mismatch).
           return (
             <circle
               key={i}
-              cx={60 + Math.cos(a) * 56}
-              cy={60 + Math.sin(a) * 56}
+              cx={+(60 + Math.cos(a) * 56).toFixed(3)}
+              cy={+(60 + Math.sin(a) * 56).toFixed(3)}
               r="3.5"
             />
           )

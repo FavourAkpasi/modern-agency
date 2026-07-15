@@ -50,7 +50,9 @@ Nav links are anchor scroll targets: sections expose `id`s (`#top`, `#services`,
 
 **Scroll-spy** — `hooks/use-active-section.ts` returns the id of the section whose top has passed a reference line (~30% down the viewport), or **null when above the first section** (so the hero highlights nothing); it's reactive in both scroll directions. `ids` must be in document order and a stable reference.
 
-**Animation** — two libraries coexist by role: **GSAP** for imperative timeline/scroll animations, **Framer Motion** for declarative work — variant/stagger grids (`sections/projects.tsx`), `whileInView` scroll reveals (services steps, case-study, about), and shared-layout indicators (`layoutId` in `web-nav.tsx`).
+**Animation** — two libraries coexist by role: **GSAP** for imperative timeline/scroll animations, **Framer Motion** for declarative work — variant/stagger grids (`sections/projects1.tsx`), `whileInView` scroll reveals (services steps, case-study, about), and shared-layout indicators (`layoutId` in `web-nav.tsx`).
+
+`sections/about.tsx` is a scroll-scrubbed manifesto: words are split into `.reveal-word` spans that GSAP brightens (opacity) one-by-one via a `scrub` ScrollTrigger (accent keywords stay `primary`); stats count up on enter (Framer `useInView` + a GSAP number tween); values are a simple bordered grid.
 
 `sections/services.tsx` is the scroll-driven "journey" (the most involved section):
 - Desktop draws a **rectilinear rounded-elbow path** built in real pixels (`buildPath`) from a `ResizeObserver`-measured container, so corners stay circular (no `preserveAspectRatio` distortion). Nodes are absolutely positioned at the same percentage coords the path bends to.
