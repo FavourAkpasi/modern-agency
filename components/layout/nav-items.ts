@@ -7,9 +7,10 @@ export type NavItem = {
 
 export const navItems: NavItem[] = [
   { label: "Services", href: "#services" },
-  { label: "Work", href: "#work" },
+  { label: "Projects", href: "#projects" },
+  { label: "Projects II", href: "#projects-2" },
+  { label: "Case Study", href: "#case-study" },
   { label: "About", href: "#about" },
-  { label: "Contact", href: "#contact" },
 ]
 
 // Section ids the scroll-spy watches (stable module-level reference).
