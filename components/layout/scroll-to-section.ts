@@ -4,7 +4,7 @@ import type { MouseEvent } from "react"
 // hash scrolling, so we handle it ourselves: scroll to the target element
 // (respecting its scroll-margin and the user's motion preference) and sync the
 // URL hash without a full navigation.
-export function scrollToSection(e: MouseEvent, href: string) {
+export const scrollToSection = (e: MouseEvent, href: string) => {
   if (!href.startsWith("#")) return
   const el = document.getElementById(href.slice(1))
   if (!el) return

@@ -26,7 +26,7 @@ const heroItem: Variants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
 }
 
-export function ProjectDrawer() {
+export const ProjectDrawer = () => {
   const project = useProjectDrawer((s) => s.project)
   const isOpen = useProjectDrawer((s) => s.isOpen)
   const close = useProjectDrawer((s) => s.close)

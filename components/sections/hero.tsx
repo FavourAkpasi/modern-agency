@@ -20,7 +20,7 @@ const services = [
 
 // Hero section. All animation is imperative GSAP, gated behind
 // `prefers-reduced-motion` so it degrades to static content gracefully.
-export function Hero() {
+export const Hero = () => {
   const heroRef = useRef<HTMLElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
   const lineRef = useRef<HTMLDivElement>(null)

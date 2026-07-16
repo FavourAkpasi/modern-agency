@@ -13,7 +13,7 @@ import { ThemeToggle } from "./theme-toggle"
 // Mobile navigation. Fixed to the top and morphs into a floating pill on
 // scroll (mirroring WebNav); a hamburger toggles a full-screen overlay that
 // shares its links — and active-section highlight — with the desktop nav.
-export function MobileNav() {
+export const MobileNav = () => {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const active = useActiveSection(sectionIds)

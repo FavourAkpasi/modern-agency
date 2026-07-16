@@ -6,7 +6,11 @@ import { Toaster } from "@/components/ui/sonner"
 import { ProjectDrawer } from "@/components/ui/project-drawer"
 import { ReactNode, Suspense, useState } from "react"
 
-export function Providers({ children }: { children: ReactNode }) {
+type ProvidersProps = {
+  children: ReactNode
+}
+
+export const Providers = ({ children }: ProvidersProps) => {
   const [queryClient] = useState(() => new QueryClient())
 
   return (

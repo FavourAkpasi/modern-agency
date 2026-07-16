@@ -11,7 +11,7 @@ import { ThemeToggle } from "./theme-toggle"
 
 // Desktop navigation. Fixed to the top; morphs into a floating pill once the
 // page is scrolled, and highlights the section currently in view.
-export function WebNav() {
+export const WebNav = () => {
   const [scrolled, setScrolled] = useState(false)
   const active = useActiveSection(sectionIds)
 

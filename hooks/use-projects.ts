@@ -5,7 +5,7 @@ import { getAllProjects } from "@/services/project.service"
 
 // Shared projects query. Both Projects variants call this, so TanStack Query
 // dedupes it into a single request and cache entry.
-export function useProjects() {
+export const useProjects = () => {
   return useQuery({
     queryKey: ["projects"],
     queryFn: () => getAllProjects(),

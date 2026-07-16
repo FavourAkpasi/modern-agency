@@ -6,7 +6,7 @@ import { useEffect, useState } from "react"
 // the viewport, or null when above the first section (e.g. the hero). Reactive
 // in both scroll directions. `ids` must be in document order and a stable
 // reference (e.g. module-level) to avoid re-subscribing on every render.
-export function useActiveSection(ids: string[]): string | null {
+export const useActiveSection = (ids: string[]): string | null => {
   const [active, setActive] = useState<string | null>(null)
 
   useEffect(() => {

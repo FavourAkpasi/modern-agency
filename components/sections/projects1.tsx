@@ -29,7 +29,7 @@ const tile: Variants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
 }
 
-export function Projects1() {
+export const Projects1 = () => {
   const open = useProjectDrawer((s) => s.open)
   const loading = useSimulatedLoading()
 

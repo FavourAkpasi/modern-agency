@@ -7,7 +7,11 @@ import { cn } from "@/lib/utils"
 
 // Dark/light toggle used in both navs. Renders a neutral placeholder until
 // mounted so the icon doesn't mismatch during hydration.
-export function ThemeToggle({ className }: { className?: string }) {
+type ThemeToggleProps = {
+  className?: string
+}
+
+export const ThemeToggle = ({ className }: ThemeToggleProps) => {
   const { resolvedTheme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 

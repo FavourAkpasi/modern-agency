@@ -8,7 +8,7 @@ import { CaseStudy } from "@/components/sections/case-study"
 import { About } from "@/components/sections/about"
 import { Footer } from "@/components/sections/footer"
 
-export default function Home() {
+const Home = () => {
   return (
     <>
       <WebNav />
@@ -30,3 +30,5 @@ export default function Home() {
     </>
   )
 }
+
+export default Home

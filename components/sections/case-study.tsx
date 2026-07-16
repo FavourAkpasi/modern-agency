@@ -24,7 +24,7 @@ const reveal = {
   viewport: { once: true, margin: "-80px" },
 }
 
-export function CaseStudy() {
+export const CaseStudy = () => {
   const open = useProjectDrawer((s) => s.open)
 
   return (

@@ -10,7 +10,12 @@ import { useSimulatedLoading } from "@/hooks/use-simulated-loading"
 import { useProjectDrawer } from "@/stores/project-drawer"
 import { SectionHeading } from "./section-heading"
 
-function PreviewPanel({ project, index }: { project: Project; index: number }) {
+type PreviewPanelProps = {
+  project: Project
+  index: number
+}
+
+const PreviewPanel = ({ project, index }: PreviewPanelProps) => {
   const onImage = Boolean(project.image)
   return (
     <div
@@ -91,7 +96,7 @@ function PreviewPanel({ project, index }: { project: Project; index: number }) {
   )
 }
 
-export function Projects2() {
+export const Projects2 = () => {
   const open = useProjectDrawer((s) => s.open)
   const [activeIdx, setActiveIdx] = useState(0)
   const loading = useSimulatedLoading()
