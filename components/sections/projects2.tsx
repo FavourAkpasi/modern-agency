@@ -5,6 +5,8 @@ import Image from "next/image"
 import { AnimatePresence, motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { projects, type Project } from "@/lib/constants/projects"
+import { ProjectsListSkeleton } from "@/components/skeletons"
+import { useSimulatedLoading } from "@/hooks/use-simulated-loading"
 import { useProjectDrawer } from "@/stores/project-drawer"
 import { SectionHeading } from "./section-heading"
 
@@ -92,6 +94,16 @@ function PreviewPanel({ project, index }: { project: Project; index: number }) {
 export function Projects2() {
   const open = useProjectDrawer((s) => s.open)
   const [activeIdx, setActiveIdx] = useState(0)
+  const loading = useSimulatedLoading()
+
+  if (loading) {
+    return (
+      <section id="projects-2" className="mb-32">
+        <SectionHeading label="Selected work" title="Projects II" />
+        <ProjectsListSkeleton />
+      </section>
+    )
+  }
 
   return (
     <section id="projects-2" className="mb-32">

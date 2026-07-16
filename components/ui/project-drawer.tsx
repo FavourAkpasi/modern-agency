@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import Image from "next/image"
 import { motion, type Variants } from "framer-motion"
 import { ArrowUpRight, X } from "lucide-react"
@@ -12,6 +12,8 @@ import {
   DrawerDescription,
   DrawerTitle,
 } from "@/components/ui/drawer"
+import { ProjectDrawerSkeleton } from "@/components/skeletons"
+import { useSimulatedLoading } from "@/hooks/use-simulated-loading"
 import { useProjectDrawer } from "@/stores/project-drawer"
 
 // Stagger the hero block in as the drawer settles.
@@ -24,29 +26,13 @@ const heroItem: Variants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
 }
 
-function DrawerSkeleton() {
-  return (
-    <div className="animate-pulse">
-      <div className="h-[40vh] w-full bg-muted/40" />
-      <div className="mx-auto max-w-3xl space-y-10 px-6 py-12">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="space-y-3 border-t border-border pt-8">
-            <div className="h-4 w-32 rounded bg-muted/40" />
-            <div className="h-4 w-full rounded bg-muted/40" />
-            <div className="h-4 w-4/5 rounded bg-muted/40" />
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
 export function ProjectDrawer() {
   const project = useProjectDrawer((s) => s.project)
   const isOpen = useProjectDrawer((s) => s.isOpen)
   const close = useProjectDrawer((s) => s.close)
   const scrollRef = useRef<HTMLDivElement>(null)
-  const [loading, setLoading] = useState(false)
+  // Restarts on open and whenever the project changes.
+  const loading = useSimulatedLoading(`${isOpen}-${project?.id ?? ""}`)
 
   // Drives the page's scale-back effect (see globals.css).
   useEffect(() => {
@@ -54,19 +40,12 @@ export function ProjectDrawer() {
     else delete document.body.dataset.drawerOpen
   }, [isOpen])
 
-  // Simulate a brief fetch each time the drawer opens (or switches project).
-  useEffect(() => {
-    if (!isOpen) return
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: fake a 1s load on open
-    setLoading(true)
-    const timer = setTimeout(() => setLoading(false), 1000)
-    return () => clearTimeout(timer)
-  }, [isOpen, project?.id])
-
   const goToContact = () => {
     close()
     requestAnimationFrame(() => {
-      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      const reduce = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches
       document
         .getElementById("contact")
         ?.scrollIntoView({ behavior: reduce ? "auto" : "smooth" })
@@ -100,7 +79,7 @@ export function ProjectDrawer() {
               className="flex-1 overflow-y-auto overscroll-contain"
             >
               {loading ? (
-                <DrawerSkeleton />
+                <ProjectDrawerSkeleton />
               ) : (
                 <>
                   {/* Hero */}
