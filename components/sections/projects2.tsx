@@ -4,17 +4,12 @@ import { useState } from "react"
 import Image from "next/image"
 import { AnimatePresence, motion } from "framer-motion"
 import { cn } from "@/lib/utils"
-import { useProjects } from "@/hooks/use-projects"
-import { deriveMeta, shortTitle } from "@/lib/project-meta"
-import { caseStudyFromProject } from "@/lib/case-study"
-import { useProjectDrawer } from "@/components/project-drawer"
-import type { Project } from "@/types/project"
+import { projects, type Project } from "@/lib/constants/projects"
+import { useProjectDrawer } from "@/stores/project-drawer"
 import { SectionHeading } from "./section-heading"
-import { ProjectsEmpty, ProjectsError } from "./projects-states"
 
 function PreviewPanel({ project, index }: { project: Project; index: number }) {
-  const meta = deriveMeta(project, index)
-  const onImage = Boolean(meta.image)
+  const onImage = Boolean(project.image)
   return (
     <div
       className="group/panel relative flex aspect-4/5 flex-col justify-between overflow-hidden rounded-3xl border border-border p-8"
@@ -22,14 +17,14 @@ function PreviewPanel({ project, index }: { project: Project; index: number }) {
         onImage
           ? undefined
           : {
-              background: `radial-gradient(120% 100% at 0% 0%, ${meta.accent}26, transparent 55%)`,
+              background: `radial-gradient(120% 100% at 0% 0%, ${project.accent}26, transparent 55%)`,
             }
       }
     >
       {onImage && (
         <>
           <Image
-            src={meta.image!}
+            src={project.image!}
             alt={project.title}
             fill
             sizes="(min-width: 768px) 40vw, 100vw"
@@ -45,9 +40,9 @@ function PreviewPanel({ project, index }: { project: Project; index: number }) {
       <div className="relative flex items-center justify-between">
         <span
           className="text-sm tracking-widest uppercase"
-          style={{ color: meta.accent }}
+          style={{ color: project.accent }}
         >
-          {meta.category}
+          {project.category}
         </span>
         <span
           className={cn(
@@ -55,14 +50,14 @@ function PreviewPanel({ project, index }: { project: Project; index: number }) {
             onImage ? "text-white/70" : "text-muted-foreground"
           )}
         >
-          {meta.year}
+          {project.year}
         </span>
       </div>
 
       <div className="relative">
         <span
           className="block text-[6rem] leading-none font-black tracking-tighter text-transparent"
-          style={{ WebkitTextStroke: `2px ${meta.accent}` }}
+          style={{ WebkitTextStroke: `2px ${project.accent}` }}
         >
           {String(index + 1).padStart(2, "0")}
         </span>
@@ -72,10 +67,10 @@ function PreviewPanel({ project, index }: { project: Project; index: number }) {
             onImage && "text-white"
           )}
         >
-          {shortTitle(project.title, 4)}
+          {project.title}
         </h3>
         <div className="mt-4 flex flex-wrap gap-2">
-          {meta.tags.map((tag) => (
+          {project.tags.map((tag) => (
             <span
               key={tag}
               className={cn(
@@ -95,105 +90,80 @@ function PreviewPanel({ project, index }: { project: Project; index: number }) {
 }
 
 export function Projects2() {
-  const { data: projects, isPending, isError, refetch } = useProjects()
-  const { open } = useProjectDrawer()
+  const open = useProjectDrawer((s) => s.open)
   const [activeIdx, setActiveIdx] = useState(0)
 
   return (
     <section id="projects-2" className="mb-32">
       <SectionHeading label="Selected work" title="Projects II" />
 
-      {isError ? (
-        <ProjectsError onRetry={() => refetch()} />
-      ) : isPending ? (
-        <div className="grid gap-12 md:grid-cols-2">
-          <div className="space-y-4">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div
-                key={i}
-                className="h-16 animate-pulse rounded-xl border border-border bg-muted/40"
-              />
-            ))}
-          </div>
-          <div className="hidden aspect-4/5 animate-pulse rounded-3xl border border-border bg-muted/40 md:block" />
-        </div>
-      ) : projects.length === 0 ? (
-        <ProjectsEmpty />
-      ) : (
-        <div className="grid gap-12 md:grid-cols-2">
-          {/* Index list */}
-          <ul>
-            {projects.map((project, i) => {
-              const meta = deriveMeta(project, i)
-              const activeRow = i === activeIdx
-              return (
-                <li key={project.id}>
-                  <button
-                    type="button"
-                    onClick={() => open(caseStudyFromProject(project, i))}
-                    onMouseEnter={() => setActiveIdx(i)}
-                    onFocus={() => setActiveIdx(i)}
-                    className="group flex w-full items-baseline justify-between gap-4 border-b border-border py-6 text-left"
-                  >
-                    <span className="flex items-baseline gap-4">
-                      <span className="font-mono text-sm text-muted-foreground">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <span
-                        className={cn(
-                          "text-2xl font-black tracking-tighter uppercase transition-colors duration-300 md:text-4xl",
-                          activeRow
-                            ? "text-foreground"
-                            : "text-foreground md:text-muted-foreground md:group-hover:text-foreground"
-                        )}
-                      >
-                        {shortTitle(project.title, 4)}
-                      </span>
-                    </span>
-                    <span className="hidden text-xs tracking-widest text-muted-foreground uppercase sm:block">
-                      {meta.category}
-                    </span>
-                  </button>
-                  {/* Mobile inline preview */}
-                  <button
-                    type="button"
-                    onClick={() => open(caseStudyFromProject(project, i))}
-                    className="block w-full py-6 text-left md:hidden"
-                  >
-                    <PreviewPanel project={project} index={i} />
-                  </button>
-                </li>
-              )
-            })}
-          </ul>
-
-          {/* Sticky preview (desktop) */}
-          <div className="hidden md:block">
-            <button
-              type="button"
-              onClick={() =>
-                open(caseStudyFromProject(projects[activeIdx], activeIdx))
-              }
-              className="sticky top-32 block w-full cursor-pointer text-left"
-            >
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={projects[activeIdx].id}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -16 }}
-                  transition={{ duration: 0.35, ease: "easeOut" }}
+      <div className="grid gap-12 md:grid-cols-2">
+        {/* Index list */}
+        <ul>
+          {projects.map((project, i) => {
+            const activeRow = i === activeIdx
+            return (
+              <li key={project.id}>
+                <button
+                  type="button"
+                  onClick={() => open(project)}
+                  onMouseEnter={() => setActiveIdx(i)}
+                  onFocus={() => setActiveIdx(i)}
+                  className="group flex w-full items-baseline justify-between gap-4 border-b border-border py-6 text-left"
                 >
-                  <PreviewPanel
-                    project={projects[activeIdx]}
-                    index={activeIdx}
-                  />
-                </motion.div>
-              </AnimatePresence>
-            </button>
-          </div>
+                  <span className="flex items-baseline gap-4">
+                    <span className="font-mono text-sm text-muted-foreground">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span
+                      className={cn(
+                        "text-2xl font-black tracking-tighter uppercase transition-colors duration-300 md:text-4xl",
+                        activeRow
+                          ? "text-foreground"
+                          : "text-foreground md:text-muted-foreground md:group-hover:text-foreground"
+                      )}
+                    >
+                      {project.title}
+                    </span>
+                  </span>
+                  <span className="hidden text-xs tracking-widest text-muted-foreground uppercase sm:block">
+                    {project.category}
+                  </span>
+                </button>
+                {/* Mobile inline preview */}
+                <button
+                  type="button"
+                  onClick={() => open(project)}
+                  className="block w-full py-6 text-left md:hidden"
+                >
+                  <PreviewPanel project={project} index={i} />
+                </button>
+              </li>
+            )
+          })}
+        </ul>
+
+        {/* Sticky preview (desktop) */}
+        <div className="hidden md:block">
+          <button
+            type="button"
+            onClick={() => open(projects[activeIdx])}
+            className="sticky top-32 block w-full cursor-pointer text-left"
+          >
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={projects[activeIdx].id}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -16 }}
+                transition={{ duration: 0.35, ease: "easeOut" }}
+              >
+                <PreviewPanel project={projects[activeIdx]} index={activeIdx} />
+              </motion.div>
+            </AnimatePresence>
+          </button>
         </div>
-      )}
+      </div>
     </section>
   )
 }
