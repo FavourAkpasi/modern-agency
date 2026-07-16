@@ -153,3 +153,28 @@ body[data-drawer-open] [data-scale-container] {
     transition: none;
   }
 }
+/* Pre-animation state for the GSAP hero intro.
+   The page is prerendered, so without this the browser paints the hero at its
+   final position before JS boots, then GSAP snaps it to its start state — a
+   visible flash. Painting the start state in CSS makes the first paint correct.
+
+   Rule: this block only ever sets `opacity`. Every transform belongs to GSAP
+   alone (see sections/hero.tsx). An earlier version parked .hero-line-inner
+   with a CSS translateY, which spilled the headline over the divider the moment
+   the timeline flipped .hero-mask to overflow:visible. Opacity can't mispose
+   anything — worst case something stays invisible.
+
+   Gated on `no-preference` to mirror the hero's gsap.matchMedia gate: those
+   users' timeline never runs, so they must never get the hidden state. The
+   no-JS escape hatch is the <noscript> block in app/layout.tsx. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-top,
+  .hero-sub,
+  .hero-scroll,
+  .hero-stat,
+  .hero-marquee,
+  .hero-mask,
+  .hero-line {
+    opacity: 0;
+  }
+}

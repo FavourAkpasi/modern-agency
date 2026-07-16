@@ -36,35 +36,62 @@ export const Hero = () => {
 
       // Only animate for users who haven't asked to reduce motion.
       mm.add("(prefers-reduced-motion: no-preference)", () => {
+        // globals.css pre-hides the hero (opacity:0) so the prerendered HTML
+        // can't flash the final layout before this runs. Take ownership: park
+        // the transforms while things are still hidden, then clear the CSS hide
+        // by writing opacity inline. CSS only ever sets opacity — every
+        // transform is GSAP's alone, so an interrupted tween can leave
+        // something invisible but never mispositioned.
+        gsap.set(".hero-line-inner", { yPercent: 115 })
+        gsap.set(lineRef.current, { scaleX: 0, transformOrigin: "left center" })
+        gsap.set([".hero-mask", lineRef.current], { opacity: 1 })
+
         // Intro timeline: masked line reveals + a drawn divider.
         const tl = gsap.timeline({ defaults: { ease: "power4.out" } })
 
-        tl.from(".hero-top", { y: -20, opacity: 0, duration: 0.8 })
-          .from(
+        // fromTo()/to(), never from(): from() reads the element's current value
+        // as its destination, which the CSS pre-hide has already set to 0.
+        tl.fromTo(
+          ".hero-top",
+          { y: -20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8 }
+        )
+          .to(
             ".hero-line-inner",
-            { yPercent: 115, duration: 1.1, stagger: 0.12 },
+            { yPercent: 0, duration: 1.1, stagger: 0.12 },
             "-=0.3"
           )
           // Reveal done — unclip the masks so mouse parallax isn't cut off.
           .set(".hero-mask", { overflow: "visible" })
-          .from(".hero-sub", { y: 24, opacity: 0, duration: 0.9 }, "-=0.7")
-          .from(
+          .fromTo(
+            ".hero-sub",
+            { y: 24, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.9 },
+            "-=0.7"
+          )
+          .to(
             lineRef.current,
-            {
-              scaleX: 0,
-              transformOrigin: "left center",
-              duration: 1,
-              ease: "power3.inOut",
-            },
+            { scaleX: 1, duration: 1, ease: "power3.inOut" },
             "-=0.9"
           )
-          .from(".hero-scroll", { opacity: 0, y: 12, duration: 0.6 }, "-=0.6")
-          .from(
+          .fromTo(
+            ".hero-scroll",
+            { opacity: 0, y: 12 },
+            { opacity: 1, y: 0, duration: 0.6 },
+            "-=0.6"
+          )
+          .fromTo(
             ".hero-stat",
-            { y: 24, opacity: 0, duration: 0.7, stagger: 0.1 },
+            { y: 24, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.7, stagger: 0.1 },
             "-=0.4"
           )
-          .from(".hero-marquee", { opacity: 0, duration: 0.8 }, "-=0.3")
+          .fromTo(
+            ".hero-marquee",
+            { opacity: 0 },
+            { opacity: 1, duration: 0.8 },
+            "-=0.3"
+          )
 
         // Count up each stat number from zero.
         gsap.utils.toArray<HTMLElement>(".stat-value").forEach((el) => {
@@ -196,7 +223,10 @@ export const Hero = () => {
         </a>
       </div>
 
-      <div ref={lineRef} className="mt-16 h-px w-full bg-border"></div>
+      <div
+        ref={lineRef}
+        className="hero-line mt-16 h-px w-full bg-border"
+      ></div>
 
       {/* Stats */}
       <div className="mt-12 grid grid-cols-2 justify-items-center gap-8 sm:grid-cols-3">

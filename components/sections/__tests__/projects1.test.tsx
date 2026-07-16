@@ -13,7 +13,9 @@ describe("Projects1", () => {
     renderWithProviders(<Projects1 />)
 
     expect(screen.getByText("(Selected work)")).toBeInTheDocument()
-    expect(screen.getByRole("heading", { name: "Projects" })).toBeInTheDocument()
+    expect(
+      screen.getByRole("heading", { name: "Projects" })
+    ).toBeInTheDocument()
   })
 
   it("renders a clickable tile per project", () => {

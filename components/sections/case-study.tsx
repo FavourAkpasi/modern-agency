@@ -1,9 +1,15 @@
 "use client"
 
+import Image from "next/image"
 import { motion } from "framer-motion"
+import { cn } from "@/lib/utils"
 import { featuredProject } from "@/lib/constants/projects"
 import { useProjectDrawer } from "@/stores/project-drawer"
 import { SectionHeading } from "./section-heading"
+
+// Mirrors the projects grids: use the image when there is one, otherwise fall
+// back to the type/gradient treatment.
+const onImage = Boolean(featuredProject.image)
 
 const meta = [
   { label: "Client", value: "Nova Finance" },
@@ -38,17 +44,53 @@ export const CaseStudy = () => {
           type="button"
           onClick={() => open(featuredProject)}
           transition={{ duration: 0.7, ease: "easeOut" }}
-          className="group relative flex aspect-4/5 flex-col justify-between overflow-hidden rounded-3xl bg-linear-to-br from-muted to-background p-8 text-left shadow-lg transition-all duration-300 hover:scale-101 hover:border-foreground"
+          className={cn(
+            "group relative flex aspect-4/5 flex-col justify-between overflow-hidden rounded-3xl p-8 text-left shadow-lg transition-all duration-300 hover:scale-101 hover:border-foreground",
+            !onImage && "bg-linear-to-br from-muted to-background"
+          )}
         >
-          <span className="text-sm tracking-widest text-muted-foreground uppercase">
-            Fintech · Rebrand
+          {onImage && (
+            <>
+              <Image
+                src={featuredProject.image!}
+                alt={featuredProject.title}
+                fill
+                sizes="(min-width: 768px) 50vw, 100vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div
+                aria-hidden
+                className="absolute inset-0 bg-linear-to-t from-black/85 via-black/35 to-black/10"
+              />
+            </>
+          )}
+
+          <span
+            className={cn(
+              "relative text-sm tracking-widest uppercase",
+              onImage ? "text-white/70" : "text-muted-foreground"
+            )}
+          >
+            {featuredProject.category}
           </span>
-          <div>
-            <span className="block text-[7rem] leading-none font-black tracking-tighter text-transparent [-webkit-text-stroke:2px_var(--muted-foreground)]">
+          <div className="relative">
+            <span
+              className="block text-[7rem] leading-none font-black tracking-tighter text-transparent"
+              style={{
+                WebkitTextStroke: `2px ${
+                  onImage ? "rgba(255,255,255,0.65)" : "var(--muted-foreground)"
+                }`,
+              }}
+            >
               01
             </span>
-            <h3 className="mt-4 text-4xl font-black tracking-tighter uppercase md:text-5xl">
-              Nova Finance
+            <h3
+              className={cn(
+                "mt-4 text-4xl font-black tracking-tighter uppercase md:text-5xl",
+                onImage && "text-white"
+              )}
+            >
+              {featuredProject.title}
             </h3>
           </div>
         </motion.button>

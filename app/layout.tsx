@@ -77,6 +77,19 @@ const RootLayout = ({ children }: RootLayoutProps) => {
       )}
     >
       <body>
+        {/* globals.css pre-hides the hero so it can't flash before GSAP boots.
+            If JS never runs, nothing would reveal it — so undo that here.
+            Must be dangerouslySetInnerHTML: children of <noscript> are inert
+            text to the parser, but React would reconcile a real <style> node on
+            hydration — and a <style> applies even inside a display:none parent,
+            so these !important rules would fight GSAP with JS enabled. */}
+        <noscript
+          dangerouslySetInnerHTML={{
+            __html: `<style>
+              .hero-top, .hero-sub, .hero-scroll, .hero-stat, .hero-marquee, .hero-mask, .hero-line { opacity: 1 !important; }
+            </style>`,
+          }}
+        />
         <Providers>{children}</Providers>
         <Analytics />
         <SpeedInsights />
