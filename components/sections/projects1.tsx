@@ -45,7 +45,7 @@ export const Projects1 = () => {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-80px" }}
-          className="grid grid-flow-dense auto-rows-[170px] grid-cols-2 gap-4 sm:grid-cols-3"
+          className="grid grid-flow-dense auto-rows-[170px] grid-cols-1 gap-4 sm:grid-cols-3"
         >
           {projects.map((project, i) => {
             const onImage = Boolean(project.image)

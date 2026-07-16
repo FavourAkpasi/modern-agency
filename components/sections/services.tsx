@@ -192,7 +192,12 @@ type StepTextProps = {
 
 const StepText = ({ step, align, active }: StepTextProps) => {
   return (
-    <div className={cn("ml-12 w-64", align === "right" && "mr-12 text-right")}>
+    <div
+      className={cn(
+        "w-64 md:ml-12",
+        align === "right" && "text-right md:mr-12"
+      )}
+    >
       <div
         className={cn(
           "flex items-center gap-3",

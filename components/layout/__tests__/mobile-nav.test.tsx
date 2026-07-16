@@ -14,7 +14,9 @@ describe("MobileNav", () => {
     renderWithProviders(<MobileNav />)
 
     expect(screen.getByText("Agency.")).toBeInTheDocument()
-    expect(screen.getByRole("button", { name: /open menu/i })).toBeInTheDocument()
+    expect(
+      screen.getByRole("button", { name: /open menu/i })
+    ).toBeInTheDocument()
     expect(screen.queryByRole("link", { name: navItems[0].label })).toBeNull()
   })
 
@@ -29,6 +31,8 @@ describe("MobileNav", () => {
         item.href
       )
     })
-    expect(screen.getByRole("button", { name: /close menu/i })).toBeInTheDocument()
+    expect(
+      screen.getByRole("button", { name: /close menu/i })
+    ).toBeInTheDocument()
   })
 })
