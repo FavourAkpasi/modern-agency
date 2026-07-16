@@ -1,0 +1,63 @@
+name: Test
+
+# Runs on PRs into main, gating the merge — and therefore the Vercel deploy
+# that follows it.
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  # Required for the coverage report action to post its PR comment.
+  pull-requests: write
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          # Absent on forks — Sentry then skips source-map upload rather than failing.
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+  test:
+    name: Test
+    # Only run the suite if the production build is sound.
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run integration tests with coverage
+        run: npm run test:integration:coverage
+
+      - name: Report coverage
+        # Still comment when tests fail — that's when the report matters most.
+        if: always()
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          # Coverage is written to test/integration/, not the action's default ./coverage.
+          json-summary-path: test/integration/coverage/coverage-summary.json
+          json-final-path: test/integration/coverage/coverage-final.json
