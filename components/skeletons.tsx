@@ -14,18 +14,27 @@ const bentoSpans = [
   "",
 ]
 
-export const ProjectsBentoSkeleton = () => (
+// `count` keeps the placeholder tile/row count in step with the real data, so
+// the layout doesn't jump when the skeleton swaps out.
+type ProjectsSkeletonProps = {
+  count?: number
+}
+
+export const ProjectsBentoSkeleton = ({ count = 6 }: ProjectsSkeletonProps) => (
   <div className="grid grid-flow-dense auto-rows-[170px] grid-cols-2 gap-4 sm:grid-cols-3">
-    {bentoSpans.map((span, i) => (
-      <Skeleton key={i} className={cn("rounded-2xl", span)} />
+    {Array.from({ length: count }).map((_, i) => (
+      <Skeleton
+        key={i}
+        className={cn("rounded-2xl", bentoSpans[i % bentoSpans.length])}
+      />
     ))}
   </div>
 )
 
-export const ProjectsListSkeleton = () => (
+export const ProjectsListSkeleton = ({ count = 6 }: ProjectsSkeletonProps) => (
   <div className="grid gap-12 md:grid-cols-2">
     <div>
-      {Array.from({ length: 6 }).map((_, i) => (
+      {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
           className="flex items-center justify-between gap-4 border-b border-border py-6"

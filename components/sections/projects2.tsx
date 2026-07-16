@@ -105,7 +105,7 @@ export const Projects2 = () => {
     return (
       <section id="projects-2" className="mb-32">
         <SectionHeading label="Selected work" title="Projects II" />
-        <ProjectsListSkeleton />
+        <ProjectsListSkeleton count={projects.length} />
       </section>
     )
   }
