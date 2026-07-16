@@ -1,8 +1,8 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { featuredCaseStudy } from "@/lib/case-study"
-import { useProjectDrawer } from "@/components/project-drawer"
+import { featuredProject } from "@/lib/constants/projects"
+import { useProjectDrawer } from "@/stores/project-drawer"
 import { SectionHeading } from "./section-heading"
 
 const meta = [
@@ -25,7 +25,7 @@ const reveal = {
 }
 
 export function CaseStudy() {
-  const { open } = useProjectDrawer()
+  const open = useProjectDrawer((s) => s.open)
 
   return (
     <section id="case-study" className="mb-32">
@@ -36,7 +36,7 @@ export function CaseStudy() {
         <motion.button
           {...reveal}
           type="button"
-          onClick={() => open(featuredCaseStudy)}
+          onClick={() => open(featuredProject)}
           transition={{ duration: 0.7, ease: "easeOut" }}
           className="group relative flex aspect-4/5 flex-col justify-between overflow-hidden rounded-3xl border border-border bg-linear-to-br from-muted to-background p-8 text-left transition-colors hover:border-foreground"
         >
@@ -91,7 +91,7 @@ export function CaseStudy() {
 
           <button
             type="button"
-            onClick={() => open(featuredCaseStudy)}
+            onClick={() => open(featuredProject)}
             className="group mt-10 inline-flex w-fit items-center gap-3 text-sm tracking-widest uppercase transition-colors hover:text-primary"
           >
             Read the full case study

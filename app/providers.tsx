@@ -3,7 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ThemeProvider } from "next-themes"
 import { Toaster } from "@/components/ui/sonner"
-import { ProjectDrawerProvider } from "@/components/project-drawer"
+import { ProjectDrawer } from "@/components/ui/project-drawer"
 import { ReactNode, Suspense, useState } from "react"
 
 export function Providers({ children }: { children: ReactNode }) {
@@ -17,9 +17,8 @@ export function Providers({ children }: { children: ReactNode }) {
         enableSystem={false}
         disableTransitionOnChange
       >
-        <ProjectDrawerProvider>
-          <Suspense>{children}</Suspense>
-        </ProjectDrawerProvider>
+        <Suspense>{children}</Suspense>
+        <ProjectDrawer />
         <Toaster />
       </ThemeProvider>
     </QueryClientProvider>
