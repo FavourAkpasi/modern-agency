@@ -38,7 +38,7 @@ export const Projects1 = () => {
       <SectionHeading label="Selected work" title="Projects" />
 
       {loading ? (
-        <ProjectsBentoSkeleton />
+        <ProjectsBentoSkeleton count={projects.length} />
       ) : (
         <motion.div
           variants={container}

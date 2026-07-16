@@ -38,7 +38,7 @@ export const CaseStudy = () => {
           type="button"
           onClick={() => open(featuredProject)}
           transition={{ duration: 0.7, ease: "easeOut" }}
-          className="group relative flex aspect-4/5 flex-col justify-between overflow-hidden rounded-3xl border border-border bg-linear-to-br from-muted to-background p-8 text-left transition-colors hover:border-foreground"
+          className="group relative flex aspect-4/5 flex-col justify-between overflow-hidden rounded-3xl bg-linear-to-br from-muted to-background p-8 text-left shadow-lg transition-all duration-300 hover:scale-101 hover:border-foreground"
         >
           <span className="text-sm tracking-widest text-muted-foreground uppercase">
             Fintech · Rebrand
