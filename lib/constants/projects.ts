@@ -112,8 +112,7 @@ export const projects: Project[] = [
     accent: "#8b5cf6",
     tags: ["Editorial", "Web", "Motion"],
     image: img("monogram-mag"),
-    excerpt:
-      "An online magazine where typography does the heavy lifting.",
+    excerpt: "An online magazine where typography does the heavy lifting.",
     sections: baseSections(
       "Monogram",
       "Editorial",

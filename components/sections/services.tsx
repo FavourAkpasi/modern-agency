@@ -85,7 +85,7 @@ const railGradientCss = `linear-gradient(to bottom, ${steps
 // Build the rectilinear (vertical → horizontal → vertical) path with rounded
 // elbows in real pixels, plus the cumulative length at each node so the line
 // can fill exactly up to a node.
-function buildPath(w: number, h: number) {
+const buildPath = (w: number, h: number) => {
   const pts = steps.map((_, i) => ({
     x: (nodeXPct(i) / 100) * w,
     y: (nodeYPct(i) / 100) * h,
@@ -126,7 +126,7 @@ function buildPath(w: number, h: number) {
 }
 
 // Hand-authored abstract motif: concentric rings + orbiting dots.
-function StepMotif() {
+const StepMotif = () => {
   return (
     <svg viewBox="0 0 120 120" className="size-full" fill="none" aria-hidden>
       <g stroke="currentColor" strokeWidth="1.25" opacity="0.7">
@@ -153,7 +153,12 @@ function StepMotif() {
   )
 }
 
-function NodeIcon({ step, active }: { step: Step; active: boolean }) {
+type NodeIconProps = {
+  step: Step
+  active: boolean
+}
+
+const NodeIcon = ({ step, active }: NodeIconProps) => {
   const Icon = step.icon
   return (
     <span className="relative">
@@ -179,15 +184,13 @@ function NodeIcon({ step, active }: { step: Step; active: boolean }) {
   )
 }
 
-function StepText({
-  step,
-  align,
-  active,
-}: {
+type StepTextProps = {
   step: Step
   align: "left" | "right"
   active: boolean
-}) {
+}
+
+const StepText = ({ step, align, active }: StepTextProps) => {
   return (
     <div className={cn("ml-12 w-64", align === "right" && "mr-12 text-right")}>
       <div
@@ -234,7 +237,7 @@ const reveal = {
   transition: { duration: 0.6, ease: "easeOut" },
 } as const
 
-export function Services() {
+export const Services = () => {
   const snakeRef = useRef<HTMLDivElement>(null)
   const pathRef = useRef<SVGPathElement>(null)
   const railRef = useRef<HTMLDivElement>(null)

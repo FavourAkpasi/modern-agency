@@ -33,7 +33,11 @@ const facts = [
 
 // Splits a chunk of the manifesto into per-word spans the scroll timeline can
 // brighten one at a time.
-function RevealWords({ text }: { text: string }) {
+type RevealWordsProps = {
+  text: string
+}
+
+const RevealWords = ({ text }: RevealWordsProps) => {
   return (
     <>
       {text
@@ -48,7 +52,12 @@ function RevealWords({ text }: { text: string }) {
   )
 }
 
-function StatNumber({ value, count }: { value: number; count: boolean }) {
+type StatNumberProps = {
+  value: number
+  count: boolean
+}
+
+const StatNumber = ({ value, count }: StatNumberProps) => {
   const ref = useRef<HTMLSpanElement>(null)
   const inView = useInView(ref, { once: true, margin: "-80px" })
 
@@ -81,7 +90,7 @@ function StatNumber({ value, count }: { value: number; count: boolean }) {
   return <span ref={ref}>{count ? 0 : value}</span>
 }
 
-export function About() {
+export const About = () => {
   const sectionRef = useRef<HTMLElement>(null)
   const textRef = useRef<HTMLParagraphElement>(null)
 

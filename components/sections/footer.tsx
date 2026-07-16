@@ -12,7 +12,7 @@ const socials = [
   { label: "LinkedIn", href: "#" },
 ]
 
-export function Footer() {
+export const Footer = () => {
   const wrapRef = useRef<HTMLDivElement>(null)
   const magnetRef = useRef<HTMLAnchorElement>(null)
   const year = new Date().getFullYear()
