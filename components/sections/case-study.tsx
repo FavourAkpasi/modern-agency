@@ -44,10 +44,10 @@ export const CaseStudy = () => {
           type="button"
           onClick={() => open(featuredProject)}
           transition={{ duration: 0.7, ease: "easeOut" }}
-className={cn(
-  "group relative flex aspect-4/5 flex-col justify-between overflow-hidden rounded-3xl border border-border p-8 text-left shadow-lg transition-all duration-300 hover:scale-101 hover:border-foreground",
-  !onImage && "bg-linear-to-br from-muted to-background"
-)}
+          className={cn(
+            "group relative flex aspect-4/5 flex-col justify-between overflow-hidden rounded-3xl p-8 text-left shadow-lg transition-all duration-300 hover:scale-101 hover:border-foreground",
+            !onImage && "bg-linear-to-br from-muted to-background"
+          )}
         >
           {onImage && (
             <>
